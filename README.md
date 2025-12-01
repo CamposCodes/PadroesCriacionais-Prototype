@@ -64,7 +64,7 @@ Há uma interface web interativa inclusa no projeto que demonstra o padrão Prot
 
 ### Captura da Interface
 <p align="center">
-	<img src="./interface-screenshot.png" alt="Interface de Demonstração - Prototype" width="800"/>
+	<img src="./screenshot.png" alt="Interface de Demonstração - Prototype" width="800"/>
 </p>
 
 ### Funcionalidades da Interface
