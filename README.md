@@ -59,10 +59,10 @@ O diagrama abaixo representa a arquitetura do projeto, enfatizando o padrão **P
 - ✅ 11 testes unitários com cobertura 100%
 - ✅ Interface web interativa com animações e visualizações
 
-## 🎨 Interface de Demonstração <a name="interface"></a>
-Há uma interface web interativa inclusa no projeto que demonstra o padrão Prototype em tempo real:
 
-### Captura da Interface
+Também há uma interface web de demonstração interativa incluída: [Interface de Demonstração](https://camposcodes.github.io/PadroesCriacionais-Prototype/)
+
+
 <p align="center">
 	<img src="./screenshot.png" alt="Interface de Demonstração - Prototype" width="800"/>
 </p>
