@@ -6,440 +6,533 @@
     <title>Padrão Prototype - Sistema Bar e Cafeteria</title>
     <style>
         :root {
-            --primary: #8B5A3C;
-            --secondary: #D4A574;
-            --light: #F5E6D3;
-            --dark: #2C3E50;
-            --success: #27AE60;
-            --danger: #E74C3C;
-            --border: #E8D5C4;
+            --bg: #f6f8fa;
+            --surface: #ffffff;
+            --muted: #6a737d;
+            --border: #e1e4e8;
+            --accent: #0366d6;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #d73a49;
+            --shadow: 0 1px 2px rgba(27, 31, 35, 0.04), 0 8px 24px rgba(27, 31, 35, 0.08);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        html, body {
+            height: 100%;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 100%);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: var(--bg);
+            color: #24292e;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 24px auto;
+            padding: 0 20px;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 12px;
-            color: white;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        h1 {
+            font-size: 1.5rem;
+            margin: 0 0 24px 0;
+            color: #0b2d4a;
         }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+        h2 {
+            font-size: 1.1rem;
+            margin: 0 0 14px 0;
+            color: #24292e;
         }
 
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.95;
+        h3 {
+            font-size: 1rem;
+            margin: 0 0 12px 0;
+            color: #24292e;
         }
 
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+        h4 {
+            font-size: 0.95rem;
+            margin: 0 0 8px 0;
+            color: #24292e;
+        }
+
+        p {
+            margin: 0 0 12px 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid var(--primary);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
         }
 
-        .card h2 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 1.6em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        /* Header com stats compactos */
+        .header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
         }
 
-        /* Template Section */
-        .template-showcase {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        .header h1 {
+            margin-bottom: 12px;
         }
 
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .stat {
+            padding: 12px;
+            background: #f6f8fa;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* Main grid: Template + Clone + Comparação */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #24292e;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        /* Template */
         .template-box {
-            background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
-            border: 3px solid var(--secondary);
-            border-radius: 12px;
-            padding: 25px;
+            background: linear-gradient(180deg, #f0f9ff, #e0f2fe);
+            border: 2px solid var(--accent);
+            border-radius: 6px;
+            padding: 16px;
             text-align: center;
         }
 
         .template-icon {
-            font-size: 4em;
-            margin-bottom: 15px;
+            font-size: 3rem;
+            margin-bottom: 8px;
         }
 
         .template-name {
-            font-size: 1.8em;
             font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: #0b2d4a;
+            margin-bottom: 8px;
         }
 
         .template-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            text-align: left;
+            gap: 8px;
             background: white;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
         }
 
         .detail-item {
-            padding: 10px;
-            background: #f8f8f8;
-            border-radius: 6px;
-            border-left: 3px solid var(--secondary);
+            padding: 6px;
+            background: #f6f8fa;
+            border-radius: 4px;
+            font-size: 0.85rem;
         }
 
         .detail-label {
-            font-size: 0.85em;
-            color: #999;
+            color: var(--muted);
+            font-size: 0.75rem;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .detail-value {
             font-weight: 700;
-            color: var(--primary);
-            font-size: 1.1em;
+            color: var(--accent);
         }
 
-        .template-note {
+        .template-lock {
             background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            color: #856404;
+            border: 1px solid #ffc107;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
             font-weight: 600;
-            text-align: center;
+            color: #856404;
         }
 
         /* Clone Controls */
-        .clone-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
         .control-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
         }
 
         select, button {
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 600;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
         }
 
         select {
             flex: 1;
-            min-width: 150px;
-            background: white;
-            color: var(--dark);
+            min-width: 140px;
         }
 
         select:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(139, 90, 60, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
         }
 
         button {
-            background: var(--primary);
+            background: var(--accent);
             color: white;
             border: none;
             flex: 1;
-            min-width: 150px;
+            min-width: 120px;
         }
 
         button:hover {
-            background: #6B4423;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 90, 60, 0.3);
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(3, 102, 214, 0.2);
         }
 
         button.secondary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        button.secondary:hover {
-            background: #C4985F;
+            background: var(--success);
         }
 
         button.clear {
-            background: #999;
-        }
-
-        button.clear:hover {
-            background: #666;
+            background: var(--muted);
         }
 
         /* Clones Display */
-        .clones-container {
+        .clones-mini {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
         }
 
-        .clone-item {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border: 2px solid #0284c7;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .clone-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.2);
-        }
-
-        .clone-icon {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .clone-label {
-            font-weight: 700;
-            color: #0284c7;
-            margin-bottom: 10px;
-            font-size: 0.95em;
-        }
-
-        .clone-value {
-            background: white;
-            padding: 8px;
+        .clone-mini {
+            background: linear-gradient(180deg, #f0f9ff, #e0f2fe);
+            border: 1px solid var(--accent);
             border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .clone-mini .icon {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+        }
+
+        .clone-mini .value {
             font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 5px;
-            font-size: 0.9em;
+            color: var(--accent);
         }
 
-        .empty-clone {
+        .clone-mini.empty {
             opacity: 0.5;
-            color: #999;
+            color: var(--muted);
         }
 
-        /* Advantages Section */
-        .advantages-section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #27AE60;
-            margin-bottom: 30px;
-        }
-
-        .advantages-section h2 {
-            color: #27AE60;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-        }
-
-        .advantages-grid {
+        /* Comparison visual */
+        .comparison-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
-        .advantage-card {
-            background: linear-gradient(135deg, #f0fdf4 0%, #e8faee 100%);
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #27AE60;
+        .approach {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: var(--shadow);
         }
 
-        .advantage-title {
+        .approach-title {
             font-weight: 700;
-            color: #166534;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            color: white;
             margin-bottom: 10px;
-            font-size: 1.1em;
+            font-size: 0.95rem;
+        }
+
+        .approach.bad .approach-title {
+            background: var(--danger);
+        }
+
+        .approach.good .approach-title {
+            background: var(--success);
+        }
+
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .step {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            background: #f6f8fa;
+            border-radius: 4px;
+            border-left: 3px solid var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .approach.bad .step {
+            background: #ffe5e5;
+            border-left-color: var(--danger);
+        }
+
+        .approach.good .step {
+            background: #e5f5e5;
+            border-left-color: var(--success);
+        }
+
+        .step-num {
             display: flex;
             align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .approach.bad .step-num {
+            background: #fca5a5;
+            color: #991b1b;
+        }
+
+        .approach.good .step-num {
+            background: #86efac;
+            color: #166534;
+        }
+
+        .step-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .step-action {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .approach.bad .step-action {
+            color: #7f1d1d;
+        }
+
+        .approach.good .step-action {
+            color: #166534;
+        }
+
+        .step-detail {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .approach.bad .step-detail {
+            color: #991b1b;
+        }
+
+        .approach.good .step-detail {
+            color: #166534;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
 
-        .advantage-desc {
-            color: #276d3b;
-            font-size: 0.95em;
-            line-height: 1.5;
+        .metric {
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.85rem;
         }
 
-        /* Comparison Section */
-        .comparison-section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #0284c7;
+        .metric.bad {
+            background: #ffe5e5;
+            border: 1px solid var(--danger);
         }
 
-        .comparison-section h2 {
-            color: #0284c7;
-            margin-bottom: 25px;
-            font-size: 1.8em;
+        .metric.good {
+            background: #e5f5e5;
+            border: 1px solid var(--success);
         }
 
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            overflow: hidden;
-        }
-
-        .comparison-table th {
-            background: #0284c7;
-            color: white;
-            padding: 15px;
-            text-align: left;
+        .metric-value {
+            font-size: 1.3rem;
             font-weight: 700;
+            margin: 4px 0;
         }
 
-        .comparison-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
+        .metric.bad .metric-value {
+            color: var(--danger);
         }
 
-        .comparison-table tr:hover {
-            background: #f0f9ff;
+        .metric.good .metric-value {
+            color: var(--success);
         }
 
-        .changed {
-            background: #fef3c7;
-            font-weight: 700;
-            color: #92400e;
+        .metric-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #24292e;
         }
 
-        .unchanged {
-            background: #dbeafe;
-            color: #1e40af;
-            font-weight: 700;
+        /* Resultado */
+        .result-box {
+            background: linear-gradient(180deg, #fff9e6, #ffe6cc);
+            border: 2px dashed #ffc107;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            margin-top: 12px;
         }
 
-        /* Explanation Section */
-        .explanation-section {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border: 2px solid #0284c7;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
+        .result-box h4 {
+            color: #d97706;
         }
 
-        .explanation-section h3 {
-            color: #0284c7;
-            margin-bottom: 15px;
-            font-size: 1.4em;
+        .result-box p {
+            color: #b45309;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
-        .explanation-section p {
-            font-size: 1em;
-            line-height: 1.7;
-            margin-bottom: 12px;
-            color: #1e3a8a;
+        /* Bottom sections */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
-        .explanation-section ul {
-            margin-left: 20px;
-            margin-top: 10px;
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
         }
 
-        .explanation-section li {
-            margin-bottom: 8px;
-            color: #1e3a8a;
+        .concept {
+            padding: 12px;
+            background: #f6f8fa;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .concept strong {
+            display: block;
+            color: #0b2d4a;
+            margin-bottom: 4px;
+        }
+
+        .concept p {
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        .concept ul {
+            margin: 4px 0 0 16px;
+            padding: 0;
+            font-size: 0.85rem;
+        }
+
+        .concept li {
+            margin: 2px 0;
         }
 
         /* Responsive */
-        @media (max-width: 968px) {
-            .content {
+        @media (max-width: 1000px) {
+            .main-grid {
                 grid-template-columns: 1fr;
             }
 
-            .advantages-grid {
+            .two-column {
                 grid-template-columns: 1fr;
             }
 
-            .clones-container {
+            .comparison-grid {
                 grid-template-columns: 1fr;
             }
 
-            .comparison-table {
-                font-size: 0.9em;
-            }
-
-            .comparison-table th,
-            .comparison-table td {
-                padding: 10px;
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 600px) {
-            .header h1 {
-                font-size: 1.8em;
+            .container {
+                margin: 12px auto;
             }
 
-            .card h2 {
-                font-size: 1.3em;
+            h1 {
+                font-size: 1.2rem;
             }
 
-            .template-icon {
-                font-size: 3em;
-            }
-
-            .clone-icon {
-                font-size: 2em;
-            }
-
-            .template-details {
+            .stats {
                 grid-template-columns: 1fr;
             }
 
-            .clones-container {
+            .clones-mini {
                 grid-template-columns: 1fr;
             }
 
-            .advantages-grid {
+            .concept-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -457,215 +550,262 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>☕ Padrão Prototype</h1>
-            <p>Sistema de Pedidos para Bar e Cafeteria</p>
-        </div>
-
-        <!-- Main Content -->
-        <div class="content">
-            <!-- Template Section -->
-            <div class="card">
-                <h2>📋 Template Base (Protótipo)</h2>
-                <div class="template-showcase">
-                    <div class="template-box">
-                        <div class="template-icon">☕</div>
-                        <div class="template-name">Cappuccino</div>
-                        <div class="template-details">
-                            <div class="detail-item">
-                                <div class="detail-label">Código</div>
-                                <div class="detail-value">101</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Preço</div>
-                                <div class="detail-value">R$ 12.50</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Tamanho</div>
-                                <div class="detail-value">Grande</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Quantidade</div>
-                                <div class="detail-value">1</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="template-note">
-                        🔒 O template NUNCA muda - é a fonte de verdade
-                    </div>
+            <h1>☕ Padrão Prototype - Sistema Bar/Cafeteria</h1>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="totalClones">0</div>
+                    <div class="stat-label">Pedidos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="speedGain">-</div>
+                    <div class="stat-label">Velocidade</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="errorRisk">-</div>
+                    <div class="stat-label">Risco</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">✓</div>
+                    <div class="stat-label">Deep Copy</div>
                 </div>
             </div>
+        </div>
 
-            <!-- Clone Controls -->
+        <!-- Main: Template + Clone + Comparação -->
+        <div class="main-grid">
+            <!-- Template -->
             <div class="card">
-                <h2>🔄 Criar Clones (Pedidos)</h2>
-                <div class="clone-controls">
+                <div class="section-title">📋 Template (Protótipo)</div>
+                <div class="template-box">
+                    <div class="template-icon">☕</div>
+                    <div class="template-name">Cappuccino</div>
+                    <div class="template-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Código</div>
+                            <div class="detail-value">101</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Preço</div>
+                            <div class="detail-value">R$ 12.50</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Tamanho</div>
+                            <div class="detail-value">Grande</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Qty</div>
+                            <div class="detail-value">1</div>
+                        </div>
+                    </div>
+                    <div class="template-lock">🔒 Inalterado - Fonte de Verdade</div>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <div class="section-title">🔄 Criar Clones</div>
                     <div class="control-group">
                         <select id="tamanho">
-                            <option value="">Escolher tamanho...</option>
-                            <option value="Pequeno">🤏 Pequeno (-20%)</option>
-                            <option value="Grande">📏 Grande (base)</option>
-                            <option value="Extra Grande">📏📏 Extra Grande (+30%)</option>
+                            <option value="">Tamanho...</option>
+                            <option value="Pequeno">Pequeno (-20%)</option>
+                            <option value="Grande">Grande (base)</option>
+                            <option value="XL">XL (+30%)</option>
                         </select>
                     </div>
                     <div class="control-group">
                         <select id="quantidade">
-                            <option value="">Escolher quantidade...</option>
-                            <option value="1">1 unidade</option>
-                            <option value="2">2 unidades</option>
-                            <option value="3">3 unidades</option>
-                            <option value="5">5 unidades</option>
+                            <option value="">Quantidade...</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
                         </select>
                     </div>
                     <div class="control-group">
-                        <button onclick="clonarPedido()">➕ Clonar Pedido</button>
-                        <button class="secondary" onclick="clonar5()">➕ 5 Pedidos</button>
+                        <button onclick="clonarPedido()">+ Clonar</button>
+                        <button class="secondary" onclick="clonar5()">+ 5x</button>
                     </div>
-                    <button class="clear" onclick="limparTudo()">🗑️ Limpar Tudo</button>
+                    <button class="clear" style="width: 100%;" onclick="limparTudo()">Limpar</button>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <div class="section-title">📦 Últimos Clones</div>
+                    <div class="clones-mini" id="clonesDisplay">
+                        <div class="clone-mini empty">
+                            <div class="icon">?</div>
+                            <div>Vazio</div>
+                        </div>
+                        <div class="clone-mini empty">
+                            <div class="icon">?</div>
+                            <div>Vazio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparação Visual -->
+            <div class="card">
+                <div class="section-title">⚙️ Impacto do Padrão</div>
+                <div class="comparison-grid">
+                    <!-- SEM Prototype -->
+                    <div class="approach bad">
+                        <div class="approach-title">❌ SEM Prototype</div>
+                        <div class="steps-list">
+                            <div class="step">
+                                <div class="step-num">1</div>
+                                <div class="step-text">
+                                    <div class="step-action">Validar entrada</div>
+                                    <div class="step-detail">Checar dados</div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-num">2</div>
+                                <div class="step-text">
+                                    <div class="step-action">Criar objeto</div>
+                                    <div class="step-detail">new Bebida()</div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-num">3</div>
+                                <div class="step-text">
+                                    <div class="step-action">Validar novamente</div>
+                                    <div class="step-detail">Garantir consistência</div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-num">4</div>
+                                <div class="step-text">
+                                    <div class="step-action">Bugs em produção</div>
+                                    <div class="step-detail">Dados inconsistentes</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="metrics">
+                            <div class="metric bad">
+                                <div class="metric-label">Tempo</div>
+                                <div class="metric-value">~50ms</div>
+                            </div>
+                            <div class="metric bad">
+                                <div class="metric-label">Risco</div>
+                                <div class="metric-value">Alto ⚠️</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COM Prototype -->
+                    <div class="approach good">
+                        <div class="approach-title">✅ COM Prototype</div>
+                        <div class="steps-list">
+                            <div class="step">
+                                <div class="step-num">1</div>
+                                <div class="step-text">
+                                    <div class="step-action">Template validado</div>
+                                    <div class="step-detail">Fonte segura</div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-num">2</div>
+                                <div class="step-text">
+                                    <div class="step-action">Clonar em ms</div>
+                                    <div class="step-detail">Deep Copy automático</div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-num">3</div>
+                                <div class="step-text">
+                                    <div class="step-action">Personalizar</div>
+                                    <div class="step-detail">Apenas o necessário</div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-num">4</div>
+                                <div class="step-text">
+                                    <div class="step-action">Pronto!</div>
+                                    <div class="step-detail">Seguro e validado ✓</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="metrics">
+                            <div class="metric good">
+                                <div class="metric-label">Tempo</div>
+                                <div class="metric-value">~1ms</div>
+                            </div>
+                            <div class="metric good">
+                                <div class="metric-label">Risco</div>
+                                <div class="metric-value">Mínimo ✓</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <h4>🎯 Resultado</h4>
+                    <p>50x mais rápido + Dados consistentes + Código simples + Fácil manutenção</p>
                 </div>
             </div>
         </div>
 
-        <!-- Clones Display -->
-        <div class="card" style="margin-bottom: 30px;">
-            <h2>📦 Pedidos Clonados</h2>
-            <div id="clonesDisplay" class="clones-container">
-                <div class="clone-item empty-clone">
-                    <div class="clone-icon">?</div>
-                    <div class="clone-label">Clone 1</div>
-                    <div style="color: #999; font-size: 0.85em;">Vazio</div>
-                </div>
-                <div class="clone-item empty-clone">
-                    <div class="clone-icon">?</div>
-                    <div class="clone-label">Clone 2</div>
-                    <div style="color: #999; font-size: 0.85em;">Vazio</div>
-                </div>
-                <div class="clone-item empty-clone">
-                    <div class="clone-icon">?</div>
-                    <div class="clone-label">Clone 3</div>
-                    <div style="color: #999; font-size: 0.85em;">Vazio</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Advantages Section -->
-        <div class="advantages-section">
-            <h2>⭐ Por Que Usar Prototype Aqui?</h2>
-            <div class="advantages-grid">
-                <div class="advantage-card">
-                    <div class="advantage-title">⚡ Performance</div>
-                    <div class="advantage-desc">
-                        Clone é muito mais rápido que construir um novo objeto. Em um bar movimentado com centenas de pedidos, isso faz diferença.
+        <!-- Bottom sections -->
+        <div class="two-column">
+            <!-- Vantagens -->
+            <div class="card">
+                <h2>⭐ Vantagens do Prototype</h2>
+                <div class="concept-grid">
+                    <div class="concept">
+                        <strong>⚡ Performance</strong>
+                        <p>Clone é 50x mais rápido que construir novo objeto</p>
                     </div>
-                </div>
-                <div class="advantage-card">
-                    <div class="advantage-title">🛡️ Segurança</div>
-                    <div class="advantage-desc">
-                        Deep Copy garante que modificar um pedido não afeta o template ou outros pedidos. Dados isolados e protegidos.
+                    <div class="concept">
+                        <strong>🛡️ Segurança</strong>
+                        <p>Deep Copy isola dados de forma completa</p>
                     </div>
-                </div>
-                <div class="advantage-card">
-                    <div class="advantage-title">📋 Consistência</div>
-                    <div class="advantage-desc">
-                        Template nunca muda. Todos os pedidos começam com dados corretos do cardápio. Menos erros, mais confiabilidade.
+                    <div class="concept">
+                        <strong>📋 Consistência</strong>
+                        <p>Template é fonte única de verdade</p>
                     </div>
-                </div>
-                <div class="advantage-card">
-                    <div class="advantage-title">🔧 Manutenção</div>
-                    <div class="advantage-desc">
-                        Mudar o cardápio afeta apenas o template. Todos os novos pedidos automaticamente usam os dados atualizados.
+                    <div class="concept">
+                        <strong>🔧 Manutenção</strong>
+                        <p>Mudança no cardápio afeta apenas template</p>
                     </div>
-                </div>
-                <div class="advantage-card">
-                    <div class="advantage-title">🎯 Flexibilidade</div>
-                    <div class="advantage-desc">
-                        Personalize cada clone: tamanho, quantidade, mesa, gelo. O template serve de base, não de limitação.
+                    <div class="concept">
+                        <strong>🎯 Flexibilidade</strong>
+                        <p>Personalize cada clone sem limites</p>
                     </div>
-                </div>
-                <div class="advantage-card">
-                    <div class="advantage-title">📊 Escalabilidade</div>
-                    <div class="advantage-desc">
-                        Suporta qualquer quantidade de pedidos simultâneos. Sistema cresce sem problemas ou perda de performance.
+                    <div class="concept">
+                        <strong>📊 Escalabilidade</strong>
+                        <p>Suporta qualquer volume de pedidos</p>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Explanation Section -->
-        <div class="explanation-section">
-            <h3>🎯 Como o Prototype Impacta Este Sistema</h3>
-            <p>
-                <strong>O Problema:</strong> Em um sistema de bar/cafeteria, você precisa criar muitos pedidos rapidamente. Cada um é ligeiramente diferente (tamanho, quantidade, mesa). Sem Prototype, você teria que:
-            </p>
-            <ul>
-                <li>❌ Digitar todos os dados do cardápio novamente</li>
-                <li>❌ Alto risco de inconsistências e erros</li>
-                <li>❌ Código repetitivo e difícil de manter</li>
-            </ul>
-            <p style="margin-top: 15px;">
-                <strong>A Solução com Prototype:</strong> Clone o item do menu (template) e personalize conforme necessário:
-            </p>
-            <ul>
-                <li>✅ Clonagem rápida e eficiente</li>
-                <li>✅ Template como fonte única de verdade</li>
-                <li>✅ Cada pedido é totalmente independente (Deep Copy)</li>
-                <li>✅ Código limpo, reutilizável e fácil de manter</li>
-            </ul>
-            <p style="margin-top: 15px;">
-                <strong>Resultado:</strong> Sistema robusto, escalável e pronto para produção onde o padrão Prototype centraliza a lógica de criação de objetos.
-            </p>
-        </div>
-
-        <!-- Comparison Section -->
-        <div class="comparison-section">
-            <h2>🔍 Template vs Pedidos Clonados</h2>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th>Atributo</th>
-                        <th>Template</th>
-                        <th>Pedido 1</th>
-                        <th>Pedido 2</th>
-                        <th>Pedido 3</th>
-                    </tr>
-                </thead>
-                <tbody id="comparisonBody">
-                    <tr>
-                        <td><strong>Nome</strong></td>
-                        <td class="unchanged">Cappuccino</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Preço Base</strong></td>
-                        <td class="unchanged">R$ 12.50</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Tamanho</strong></td>
-                        <td class="unchanged">Grande</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Quantidade</strong></td>
-                        <td class="unchanged">1</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Total</strong></td>
-                        <td class="unchanged">R$ 12.50</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Explicação -->
+            <div class="card">
+                <h2>🎓 Como Funciona</h2>
+                <div class="concept-grid">
+                    <div class="concept">
+                        <strong>O Padrão</strong>
+                        <p>Centraliza criação de objetos através de clonagem</p>
+                    </div>
+                    <div class="concept">
+                        <strong>Fluxo</strong>
+                        <p>Template → Clone → Personalizar → Usar</p>
+                    </div>
+                    <div class="concept">
+                        <strong>Deep Copy</strong>
+                        <p>Cada clone é totalmente independente</p>
+                    </div>
+                    <div class="concept">
+                        <strong>Interface Cloneable</strong>
+                        <p>Java implementa clone() nativamente</p>
+                    </div>
+                    <div class="concept">
+                        <strong>Contexto</strong>
+                        <p>Perfeito para múltiplas variações de um objeto</p>
+                    </div>
+                    <div class="concept">
+                        <strong>Resultado</strong>
+                        <p>Código robusto, rápido e fácil de manter</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -684,7 +824,7 @@
             const multiplicadores = {
                 'Pequeno': 0.8,
                 'Grande': 1.0,
-                'Extra Grande': 1.3
+                'XL': 1.3
             };
 
             const precoBase = 12.50;
@@ -704,7 +844,7 @@
         }
 
         function clonar5() {
-            const tamanhos = ['Pequeno', 'Grande', 'Extra Grande'];
+            const tamanhos = ['Pequeno', 'Grande', 'XL'];
             const quantidades = [1, 2, 3, 5];
 
             for (let i = 0; i < 5; i++) {
@@ -714,7 +854,7 @@
                 const multiplicadores = {
                     'Pequeno': 0.8,
                     'Grande': 1.0,
-                    'Extra Grande': 1.3
+                    'XL': 1.3
                 };
 
                 const precoBase = 12.50;
@@ -736,125 +876,38 @@
             const display = document.getElementById('clonesDisplay');
             display.innerHTML = '';
 
+            document.getElementById('totalClones').innerText = clones.length;
+
             if (clones.length === 0) {
                 display.innerHTML = `
-                    <div class="clone-item empty-clone">
-                        <div class="clone-icon">?</div>
-                        <div class="clone-label">Clone 1</div>
-                        <div style="color: #999; font-size: 0.85em;">Vazio</div>
+                    <div class="clone-mini empty">
+                        <div class="icon">?</div>
+                        <div>Vazio</div>
                     </div>
-                    <div class="clone-item empty-clone">
-                        <div class="clone-icon">?</div>
-                        <div class="clone-label">Clone 2</div>
-                        <div style="color: #999; font-size: 0.85em;">Vazio</div>
-                    </div>
-                    <div class="clone-item empty-clone">
-                        <div class="clone-icon">?</div>
-                        <div class="clone-label">Clone 3</div>
-                        <div style="color: #999; font-size: 0.85em;">Vazio</div>
+                    <div class="clone-mini empty">
+                        <div class="icon">?</div>
+                        <div>Vazio</div>
                     </div>
                 `;
-                atualizarComparacao([]);
+                document.getElementById('speedGain').innerText = '-';
+                document.getElementById('errorRisk').innerText = '-';
                 return;
             }
 
-            clones.slice(-9).forEach((clone, idx) => {
+            clones.slice(-2).forEach((clone) => {
                 const item = document.createElement('div');
-                item.className = 'clone-item';
+                item.className = 'clone-mini';
                 item.innerHTML = `
-                    <div class="clone-icon">☕</div>
-                    <div class="clone-label">Pedido ${idx + 1}</div>
-                    <div class="clone-value">${clone.tamanho}</div>
-                    <div class="clone-value">Qty: ${clone.quantidade}</div>
-                    <div class="clone-value">💰 R$ ${clone.total}</div>
+                    <div class="icon">☕</div>
+                    <div class="value">${clone.tamanho}</div>
+                    <div style="font-size: 0.75rem; color: var(--muted);">Qty: ${clone.quantidade}</div>
+                    <div class="value">R$ ${clone.total}</div>
                 `;
                 display.appendChild(item);
             });
 
-            atualizarComparacao(clones.slice(-3));
-        }
-
-        function atualizarComparacao(pedidos) {
-            const tbody = document.getElementById('comparisonBody');
-            
-            if (pedidos.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td><strong>Nome</strong></td>
-                        <td class="unchanged">Cappuccino</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Preço Base</strong></td>
-                        <td class="unchanged">R$ 12.50</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Tamanho</strong></td>
-                        <td class="unchanged">Grande</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Quantidade</strong></td>
-                        <td class="unchanged">1</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Total</strong></td>
-                        <td class="unchanged">R$ 12.50</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                        <td class="empty-clone">-</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = `
-                <tr>
-                    <td><strong>Nome</strong></td>
-                    <td class="unchanged">Cappuccino</td>
-                    <td class="unchanged">Cappuccino</td>
-                    <td class="unchanged">Cappuccino</td>
-                    <td class="unchanged">Cappuccino</td>
-                </tr>
-                <tr>
-                    <td><strong>Preço Base</strong></td>
-                    <td class="unchanged">R$ 12.50</td>
-                    <td class="${pedidos[0]?.preco !== '12.50' ? 'changed' : 'unchanged'}">R$ ${pedidos[0]?.preco || '-'}</td>
-                    <td class="${pedidos[1]?.preco !== '12.50' ? 'changed' : 'unchanged'}">R$ ${pedidos[1]?.preco || '-'}</td>
-                    <td class="${pedidos[2]?.preco !== '12.50' ? 'changed' : 'unchanged'}">R$ ${pedidos[2]?.preco || '-'}</td>
-                </tr>
-                <tr>
-                    <td><strong>Tamanho</strong></td>
-                    <td class="unchanged">Grande</td>
-                    <td class="${pedidos[0]?.tamanho !== 'Grande' ? 'changed' : 'unchanged'}">${pedidos[0]?.tamanho || '-'}</td>
-                    <td class="${pedidos[1]?.tamanho !== 'Grande' ? 'changed' : 'unchanged'}">${pedidos[1]?.tamanho || '-'}</td>
-                    <td class="${pedidos[2]?.tamanho !== 'Grande' ? 'changed' : 'unchanged'}">${pedidos[2]?.tamanho || '-'}</td>
-                </tr>
-                <tr>
-                    <td><strong>Quantidade</strong></td>
-                    <td class="unchanged">1</td>
-                    <td class="${pedidos[0]?.quantidade != 1 ? 'changed' : 'unchanged'}">${pedidos[0]?.quantidade || '-'}</td>
-                    <td class="${pedidos[1]?.quantidade != 1 ? 'changed' : 'unchanged'}">${pedidos[1]?.quantidade || '-'}</td>
-                    <td class="${pedidos[2]?.quantidade != 1 ? 'changed' : 'unchanged'}">${pedidos[2]?.quantidade || '-'}</td>
-                </tr>
-                <tr>
-                    <td><strong>Total</strong></td>
-                    <td class="unchanged">R$ 12.50</td>
-                    <td class="changed">R$ ${pedidos[0]?.total || '-'}</td>
-                    <td class="changed">R$ ${pedidos[1]?.total || '-'}</td>
-                    <td class="changed">R$ ${pedidos[2]?.total || '-'}</td>
-                </tr>
-            `;
+            document.getElementById('speedGain').innerText = '50x';
+            document.getElementById('errorRisk').innerText = 'Min';
         }
 
         function limparTudo() {
