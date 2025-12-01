@@ -14,6 +14,7 @@
 - [Sobre](#sobre)
 - [Diagrama de Classe](#diagrama)
 - [Funcionalidades](#funcionalidades)
+- [Interface de Demonstração](#interface)
 - [Tecnologias](#tecnologias)
 - [Exemplo de Uso](#exemplo)
 - [Como Executar e Testes](#testes)
@@ -57,6 +58,23 @@ O diagrama abaixo representa a arquitetura do projeto, enfatizando o padrão **P
 - ✅ Rastreamento de mesas, setores e horários
 - ✅ 11 testes unitários com cobertura 100%
 - ✅ Interface web interativa com animações e visualizações
+
+## 🎨 Interface de Demonstração <a name="interface"></a>
+Há uma interface web interativa inclusa no projeto que demonstra o padrão Prototype em tempo real:
+
+### Captura da Interface
+<p align="center">
+	<img src="./interface-screenshot.png" alt="Interface de Demonstração - Prototype" width="800"/>
+</p>
+
+### Funcionalidades da Interface
+- **Template Visual**: Visualização clara do protótipo base (Cappuccino)
+- **Criação Interativa de Clones**: Selecione tamanho e quantidade para clonar pedidos
+- **Exibição de Pedidos**: Últimos clones criados com seus valores personalizados
+- **Comparação Visual**: Lado-a-lado mostrando diferenças entre abordagem com e sem Prototype
+- **Métricas em Tempo Real**: Exibição de velocidade, risco de erros e total de pedidos
+- **Vantagens do Padrão**: Grid com 6 vantagens-chave explicadas
+- **Como Funciona**: Seção educativa com conceitos técnicos e fluxo do padrão
 
 ##  Tecnologias <a name="tecnologias"></a>
 - **Java 11+**
