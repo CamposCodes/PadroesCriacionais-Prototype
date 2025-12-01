@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Pedidos - Padrão Prototype</title>
+    <style>
+        :root {
+            --primary-color: #8B5A3C;
+            --secondary-color: #D4A574;
+            --success-color: #27AE60;
+            --warning-color: #F39C12;
+            --danger-color: #E74C3C;
+            --dark-color: #2C3E50;
+            --light-color: #ECF0F1;
+            --gray-color: #95A5A6;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .header .pattern-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.95em;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            margin-bottom: 25px;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8em;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--gray-color);
+            font-size: 0.95em;
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            font-size: 1.5em;
+        }
+
+        .card-content {
+            font-size: 0.95em;
+            color: var(--dark-color);
+        }
+
+        .card-highlight {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: 500;
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        /* Template Card */
+        .template-card {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
+            border: 2px solid var(--warning-color);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .template-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--warning-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .template-info {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .info-row {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 3px solid var(--warning-color);
+        }
+
+        .info-label {
+            font-size: 0.85em;
+            color: var(--gray-color);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        /* Order Cards */
+        .order-card {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            position: relative;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .order-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .order-status {
+            background: var(--success-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-box {
+            background: var(--light-color);
+            padding: 12px;
+            border-radius: 5px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .detail-label {
+            font-size: 0.8em;
+            color: var(--gray-color);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .total-price {
+            background: linear-gradient(135deg, var(--success-color) 0%, #1E8449 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .independence-check {
+            background: #E8F8F5;
+            border: 2px solid var(--success-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .independence-check ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .independence-check li {
+            padding: 5px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .independence-check li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .comparison-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light-color);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--light-color);
+        }
+
+        .comparison-table .changed {
+            background: #FFF3CD;
+            font-weight: 600;
+            color: #856404;
+        }
+
+        /* Advantages Section */
+        .advantages {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .advantage-item {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid #0284c7;
+            transition: var(--transition);
+        }
+
+        .advantage-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .advantage-title {
+            font-weight: 600;
+            color: #0284c7;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .advantage-desc {
+            font-size: 0.9em;
+            color: var(--dark-color);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .advantages {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--dark-color);
+            color: #A1D82F;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 20px 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #6B4423;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--dark-color);
+        }
+
+        .btn-secondary:hover {
+            background: #C4985F;
+        }
+
+        /* Pattern Explanation */
+        .pattern-section {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #0284c7;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .pattern-title {
+            color: #0284c7;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .pattern-content {
+            color: var(--dark-color);
+            line-height: 1.8;
+        }
+
+        /* Tests Section */
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: var(--border-radius);
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .test-result.passed {
+            background: #D4EDDA;
+            border-left-color: var(--success-color);
+            color: #155724;
+        }
+
+        .test-result.failed {
+            background: #F8D7DA;
+            border-left-color: var(--danger-color);
+            color: #721C24;
+        }
+
+        .test-icon {
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: var(--dark-color);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-top: 40px;
+        }
+
+        .footer p {
+            margin: 8px 0;
+        }
+
+        .footer .highlight {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* Visualização do Flow */
+        .flow-container {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            border: 2px solid var(--light-color);
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            gap: 20px;
+        }
+
+        .flow-step-number {
+            background: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+
+        .flow-step-content {
+            flex: 1;
+        }
+
+        .flow-step-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .flow-step-desc {
+            color: var(--gray-color);
+            font-size: 0.95em;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin: -10px 0;
+        }
+
+        /* Memory Representation */
+        .memory-viz {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            border: 2px solid var(--light-color);
+        }
+
+        .memory-box {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 5px;
+        }
+
+        .memory-var {
+            color: #0284c7;
+            font-weight: 600;
+        }
+
+        .memory-value {
+            color: #059669;
+        }
+
+        .memory-reference {
+            color: #D97706;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>☕ Sistema de Pedidos - Cafeteria & Bar</h1>
+            <p class="subtitle">Demonstração Prática do Padrão Prototype em um Sistema Real</p>
+            <div class="pattern-badge">
+                🎯 Padrão Criacional: Prototype (Clonagem Profunda)
+            </div>
+        </div>
+
+        <!-- Section 1: O que é o Padrão Prototype -->
+        <section>
+            <div class="section-header">
+                <h2>🎯 Padrão Prototype - O Que É?</h2>
+                <p>Entenda como o padrão Prototype funciona neste sistema de pedidos</p>
+            </div>
+
+            <div class="pattern-section">
+                <div class="pattern-title">
+                    ✨ A Ideia Central
+                </div>
+                <div class="pattern-content">
+                    <p>O padrão <strong>Prototype</strong> permite <strong>criar novos objetos clonando um objeto existente</strong> (template/protótipo), em vez de criar cada um do zero.</p>
+                    <br>
+                    <p><strong>No nosso sistema:</strong> Um item de menu (Cappuccino) é o <strong>protótipo</strong>. Quando um cliente faz um pedido, nós <strong>clonamos esse protótipo</strong> e o personalizamos (quantidade, tamanho, gelo, mesa, hora).</p>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">❌</span>
+                        Sem Prototype (Sem Padrão)
+                    </div>
+                    <div class="card-content">
+                        <p>Você teria que:</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>✗ Criar cada pedido manualmente</li>
+                            <li>✗ Digitar todos os dados do cardápio novamente</li>
+                            <li>✗ Alto risco de erros</li>
+                            <li>✗ Código repetitivo (DRY violation)</li>
+                            <li>✗ Difícil manutenção</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">✅</span>
+                        Com Prototype (Padrão)
+                    </div>
+                    <div class="card-content">
+                        <p>Com o padrão:</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>✓ Clone rápido do cardápio</li>
+                            <li>✓ Personalize apenas o que mudar</li>
+                            <li>✓ Sem risco de erros</li>
+                            <li>✓ Código limpo e reutilizável</li>
+                            <li>✓ Fácil manutenção</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: O Flow do Sistema -->
+        <section>
+            <div class="section-header">
+                <h2>🔄 Como Funciona o Sistema</h2>
+                <p>O fluxo passo a passo da clonagem de pedidos</p>
+            </div>
+
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="flow-step-content">
+                        <div class="flow-step-title">Template Base (Protótipo)</div>
+                        <div class="flow-step-desc">Criamos um item de menu como base: Cappuccino Grande por R$ 12.50</div>
+                    </div>
+                </div>
+                <div class="flow-arrow">⬇️</div>
+
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="flow-step-content">
+                        <div class="flow-step-title">Clone Profundo (Deep Copy)</div>
+                        <div class="flow-step-desc">Clone o template criando uma cópia independente (referências diferentes)</div>
+                    </div>
+                </div>
+                <div class="flow-arrow">⬇️</div>
+
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="flow-step-content">
+                        <div class="flow-step-title">Personalize o Pedido</div>
+                        <div class="flow-step-desc">Modifique quantidade, tamanho, mesa, gelo, etc. INDEPENDENTE do template</div>
+                    </div>
+                </div>
+                <div class="flow-arrow">⬇️</div>
+
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="flow-step-content">
+                        <div class="flow-step-title">Processe o Pedido</div>
+                        <div class="flow-step-desc">Cada pedido é único, independente e pronto para processamento</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Template em Detalhes -->
+        <section>
+            <div class="section-header">
+                <h2>📋 Template do Menu</h2>
+                <p>O protótipo base do qual todos os pedidos são clonados</p>
+            </div>
+
+            <div class="template-card">
+                <div class="template-badge">PROTÓTIPO ORIGINAL</div>
+                
+                <div style="margin-top: 10px;">
+                    <h3 style="color: var(--warning-color); margin-bottom: 15px;">☕ Cappuccino</h3>
+                    <div class="template-info">
+                        <div class="info-row">
+                            <div class="info-label">Código</div>
+                            <div class="info-value">101</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Nome</div>
+                            <div class="info-value">Cappuccino</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Preço</div>
+                            <div class="info-value">R$ 12.50</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Tamanho</div>
+                            <div class="info-value">Grande</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Quantidade</div>
+                            <div class="info-value">1</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Com Gelo</div>
+                            <div class="info-value">Sim</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Mesa</div>
+                            <div class="info-value">0 (Balcão)</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Setor</div>
+                            <div class="info-value">Balcão</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="independence-check">
+                    <strong>🔒 Importante:</strong>
+                    <ul>
+                        <li>Este template é o PROTÓTIPO</li>
+                        <li>Ele NUNCA muda quando clonado</li>
+                        <li>Sempre mantém os valores originais</li>
+                        <li>Garante consistência com o cardápio</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Pedidos Criados -->
+        <section>
+            <div class="section-header">
+                <h2>📦 Pedidos Criados (Clones)</h2>
+                <p>Três pedidos independentes criados a partir do mesmo template</p>
+            </div>
+
+            <div class="grid-3">
+                <!-- Pedido 1 -->
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-title">📦 Pedido 1</div>
+                        <div class="order-status">✓ Independente</div>
+                    </div>
+
+                    <div class="order-details">
+                        <div class="detail-box">
+                            <div class="detail-label">Produto</div>
+                            <div class="detail-value">Cappuccino</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Quantidade</div>
+                            <div class="detail-value">2 unidades</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Tamanho</div>
+                            <div class="detail-value">Grande</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Preço Unit.</div>
+                            <div class="detail-value">R$ 12.50</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Com Gelo</div>
+                            <div class="detail-value">❌ Não</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Mesa</div>
+                            <div class="detail-value">Mesa 5</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Setor</div>
+                            <div class="detail-value">Salão Interno</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Hora</div>
+                            <div class="detail-value">10:35</div>
+                        </div>
+                    </div>
+
+                    <div class="total-price">
+                        💰 TOTAL: R$ 25.00
+                    </div>
+
+                    <div class="independence-check">
+                        <strong>✓ Independência:</strong>
+                        <ul>
+                            <li>Quantidade: 2 (template tem 1)</li>
+                            <li>Mesa: 5 (template tem 0)</li>
+                            <li>Gelo: Não (template tem Sim)</li>
+                            <li>Hora: 10:35 (única para este pedido)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pedido 2 -->
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-title">📦 Pedido 2</div>
+                        <div class="order-status">✓ Independente</div>
+                    </div>
+
+                    <div class="order-details">
+                        <div class="detail-box">
+                            <div class="detail-label">Produto</div>
+                            <div class="detail-value">Cappuccino</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Quantidade</div>
+                            <div class="detail-value">3 unidades</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Tamanho</div>
+                            <div class="detail-value">Pequeno</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Preço Unit.</div>
+                            <div class="detail-value">R$ 9.90</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Com Gelo</div>
+                            <div class="detail-value">✅ Sim</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Mesa</div>
+                            <div class="detail-value">Mesa 8</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Setor</div>
+                            <div class="detail-value">Patio Externo</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Hora</div>
+                            <div class="detail-value">10:40</div>
+                        </div>
+                    </div>
+
+                    <div class="total-price">
+                        💰 TOTAL: R$ 29.70
+                    </div>
+
+                    <div class="independence-check">
+                        <strong>✓ Independência:</strong>
+                        <ul>
+                            <li>Quantidade: 3 (template tem 1)</li>
+                            <li>Tamanho: Pequeno (template tem Grande)</li>
+                            <li>Preço: R$ 9.90 (template tem R$ 12.50)</li>
+                            <li>Gelo: Sim (diferente do pedido 1)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pedido 3 -->
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-title">📦 Pedido 3</div>
+                        <div class="order-status">✓ Independente</div>
+                    </div>
+
+                    <div class="order-details">
+                        <div class="detail-box">
+                            <div class="detail-label">Produto</div>
+                            <div class="detail-value">Cappuccino com Caramelo</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Quantidade</div>
+                            <div class="detail-value">1 unidade</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Tamanho</div>
+                            <div class="detail-value">Extra Grande</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Preço Unit.</div>
+                            <div class="detail-value">R$ 15.90</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Com Gelo</div>
+                            <div class="detail-value">❌ Não</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Mesa</div>
+                            <div class="detail-value">Bar 12</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Setor</div>
+                            <div class="detail-value">Bar</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Hora</div>
+                            <div class="detail-value">10:45</div>
+                        </div>
+                    </div>
+
+                    <div class="total-price">
+                        💰 TOTAL: R$ 15.90
+                    </div>
+
+                    <div class="independence-check">
+                        <strong>✓ Independência:</strong>
+                        <ul>
+                            <li>Produto: Cappuccino com Caramelo (variação)</li>
+                            <li>Tamanho: Extra Grande (template tem Grande)</li>
+                            <li>Preço: R$ 15.90 (maior que template)</li>
+                            <li>Mesa: Bar (localização diferente)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Comparação Template vs Pedidos -->
+        <section>
+            <div class="section-header">
+                <h2>🔍 Validação de Independência</h2>
+                <p>Comprovando que o template permanece inalterado após clonagens</p>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Atributo</th>
+                        <th>Template (Original)</th>
+                        <th>Pedido 1</th>
+                        <th>Pedido 2</th>
+                        <th>Pedido 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Quantidade</strong></td>
+                        <td>1</td>
+                        <td class="changed">2</td>
+                        <td class="changed">3</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tamanho</strong></td>
+                        <td>Grande</td>
+                        <td>Grande</td>
+                        <td class="changed">Pequeno</td>
+                        <td class="changed">Extra Grande</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Preço</strong></td>
+                        <td>R$ 12.50</td>
+                        <td>R$ 12.50</td>
+                        <td class="changed">R$ 9.90</td>
+                        <td class="changed">R$ 15.90</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Com Gelo</strong></td>
+                        <td>Sim</td>
+                        <td class="changed">Não</td>
+                        <td>Sim</td>
+                        <td class="changed">Não</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mesa</strong></td>
+                        <td>0</td>
+                        <td class="changed">5</td>
+                        <td class="changed">8</td>
+                        <td class="changed">12</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Setor</strong></td>
+                        <td>Balcão</td>
+                        <td class="changed">Salão</td>
+                        <td class="changed">Patio</td>
+                        <td class="changed">Bar</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hora</strong></td>
+                        <td>10:30</td>
+                        <td class="changed">10:35</td>
+                        <td class="changed">10:40</td>
+                        <td class="changed">10:45</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="background: #E8F8F5; padding: 20px; border-radius: var(--border-radius); margin-top: 20px; border-left: 4px solid var(--success-color);">
+                <strong style="color: var(--success-color); font-size: 1.1em;">✅ CONCLUSÃO:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li><strong>Template INALTERADO:</strong> Mantém todos os valores originais</li>
+                    <li><strong>Pedidos INDEPENDENTES:</strong> Cada clone tem sua própria cópia de dados</li>
+                    <li><strong>Deep Copy:</strong> Referências diferentes garantem isolamento</li>
+                    <li><strong>Sem Efeito Colateral:</strong> Modificar um pedido não afeta os outros</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 6: Representação em Memória -->
+        <section>
+            <div class="section-header">
+                <h2>💾 Representação em Memória</h2>
+                <p>Como os objetos são armazenados na memória (Deep Copy)</p>
+            </div>
+
+            <div class="memory-viz">
+                <div class="memory-box">
+                    <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 10px;">
+                        TEMPLATE (Objeto Original)
+                    </div>
+                    <div>
+                        <span class="memory-var">menuTemplate</span> → <span class="memory-reference">@0x1000</span><br>
+                        &nbsp;&nbsp;├─ nome: <span class="memory-value">"Cappuccino"</span><br>
+                        &nbsp;&nbsp;├─ preco: <span class="memory-value">12.50</span><br>
+                        &nbsp;&nbsp;├─ quantidade: <span class="memory-value">1</span><br>
+                        &nbsp;&nbsp;├─ tamanho: <span class="memory-value">"Grande"</span><br>
+                        &nbsp;&nbsp;└─ localizacao: <span class="memory-reference">@0x2000</span> → (Balcão, Mesa 0, 10:30)
+                    </div>
+                </div>
+
+                <div style="text-align: center; color: var(--primary-color); font-weight: 600; margin: 20px 0;">
+                    ⬇️ clone() ⬇️ ⬇️ clone() ⬇️ ⬇️ clone() ⬇️
+                </div>
+
+                <div class="memory-box">
+                    <div style="font-weight: 600; color: #059669; margin-bottom: 10px;">
+                        PEDIDO 1 (Cópia Independente)
+                    </div>
+                    <div>
+                        <span class="memory-var">pedido1</span> → <span class="memory-reference">@0x3000</span> <span style="color: var(--gray-color); font-size: 0.85em;">(DIFERENTE da @0x1000!)</span><br>
+                        &nbsp;&nbsp;├─ nome: <span class="memory-value">"Cappuccino"</span><br>
+                        &nbsp;&nbsp;├─ preco: <span class="memory-value">12.50</span><br>
+                        &nbsp;&nbsp;├─ quantidade: <span class="memory-value">2</span> <span style="color: #D97706;">(MODIFICADO)</span><br>
+                        &nbsp;&nbsp;├─ tamanho: <span class="memory-value">"Grande"</span><br>
+                        &nbsp;&nbsp;└─ localizacao: <span class="memory-reference">@0x3500</span> <span style="color: var(--gray-color); font-size: 0.85em;">(CÓPIA PROFUNDA!)</span>
+                    </div>
+                </div>
+
+                <div class="memory-box">
+                    <div style="font-weight: 600; color: #059669; margin-bottom: 10px;">
+                        PEDIDO 2 (Cópia Independente)
+                    </div>
+                    <div>
+                        <span class="memory-var">pedido2</span> → <span class="memory-reference">@0x4000</span> <span style="color: var(--gray-color); font-size: 0.85em;">(DIFERENTE da @0x1000!)</span><br>
+                        &nbsp;&nbsp;├─ nome: <span class="memory-value">"Cappuccino"</span><br>
+                        &nbsp;&nbsp;├─ preco: <span class="memory-value">9.90</span> <span style="color: #D97706;">(MODIFICADO)</span><br>
+                        &nbsp;&nbsp;├─ quantidade: <span class="memory-value">3</span> <span style="color: #D97706;">(MODIFICADO)</span><br>
+                        &nbsp;&nbsp;├─ tamanho: <span class="memory-value">"Pequeno"</span> <span style="color: #D97706;">(MODIFICADO)</span><br>
+                        &nbsp;&nbsp;└─ localizacao: <span class="memory-reference">@0x4500</span> <span style="color: var(--gray-color); font-size: 0.85em;">(CÓPIA PROFUNDA!)</span>
+                    </div>
+                </div>
+
+                <div style="background: #FFF3CD; padding: 15px; border-radius: 5px; margin-top: 20px; border-left: 4px solid var(--warning-color);">
+                    <strong style="color: #856404;">🔐 Deep Copy em Ação:</strong>
+                    <p style="margin-top: 8px; color: #856404;">
+                        A localizacao foi CLONADA também (referência @0x3500, @0x4500, etc), não apenas copiada. Isso garante que modificar a localização de um pedido não afete os outros!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Vantagens do Padrão -->
+        <section>
+            <div class="section-header">
+                <h2>⭐ Vantagens do Padrão Prototype</h2>
+                <p>Por que este padrão é tão importante neste contexto?</p>
+            </div>
+
+            <div class="advantages">
+                <div class="advantage-item">
+                    <div class="advantage-title">
+                        ⚡ Performance
+                    </div>
+                    <div class="advantage-desc">
+                        Clone é muito mais rápido que construir um novo objeto do zero. Ideal para sistemas com alto volume de pedidos.
+                    </div>
+                </div>
+
+                <div class="advantage-item">
+                    <div class="advantage-title">
+                        🛡️ Segurança
+                    </div>
+                    <div class="advantage-desc">
+                        Deep copy garante que modificações em um pedido não afetam o template ou outros pedidos. Dados isolados.
+                    </div>
+                </div>
+
+                <div class="advantage-item">
+                    <div class="advantage-title">
+                        🔄 Flexibilidade
+                    </div>
+                    <div class="advantage-desc">
+                        Personalize cada clone conforme necessário. O template serve de base, não de limitação.
+                    </div>
+                </div>
+
+                <div class="advantage-item">
+                    <div class="advantage-title">
+                        📊 Consistência
+                    </div>
+                    <div class="advantage-desc">
+                        Template nunca muda. Todos os pedidos começam com os mesmos dados do cardápio. Menos erros.
+                    </div>
+                </div>
+
+                <div class="advantage-item">
+                    <div class="advantage-title">
+                        🧹 Código Limpo
+                    </div>
+                    <div class="advantage-desc">
+                        Reutiliza o template em vez de duplicar código. DRY principle (Don't Repeat Yourself).
+                    </div>
+                </div>
+
+                <div class="advantage-item">
+                    <div class="advantage-title">
+                        🚀 Escalabilidade
+                    </div>
+                    <div class="advantage-desc">
+                        Adicionar novos tipos de bebidas é trivial. Cada uma tem seu próprio template/protótipo.
+                    </div>
+                </div>
+
+                <div class="advantage-item">
+                    <div class="advantage-title">
+                        🔧 Manutenção
+                    </div>
+                    <div class="advantage-desc">
+                        Mudanças no cardápio afetam automaticamente todos os novos pedidos (template é a fonte única).
+                    </div>
+                </div>
+
+                <div class="advantage-item">
+                    <div class="advantage-title">
+                        💡 Clareza
+                    </div>
+                    <div class="advantage-desc">
+                        Código claramente separa template (original) de pedidos (clones). Intent é explícito.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Implementação Java -->
+        <section>
+            <div class="section-header">
+                <h2>💻 Implementação Java</h2>
+                <p>Como o padrão é implementado no código</p>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">Classe Bebida (Implements Cloneable)</h3>
+                    <div class="code-block">
+public class Bebida 
+    implements Cloneable {
+    
+    private int codigoProduto;
+    private String nome;
+    private double preco;
+    private String tamanho;
+    private Localizacao localizacao;
+    private int quantidade;
+    private boolean comGelo;
+    
+    @Override
+    public Bebida clone() 
+        throws CloneNotSupportedException {
+        Bebida bebidaClone = 
+            (Bebida) super.clone();
+        
+        // DEEP COPY!
+        bebidaClone.localizacao = 
+            (Localizacao) 
+            bebidaClone.localizacao.clone();
+        
+        return bebidaClone;
+    }
+}
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">Uso no Main</h3>
+                    <div class="code-block">
+// 1. Criar template
+Bebida menuTemplate = new Bebida(
+    101, "Cappuccino", 12.50, 
+    "Grande", localizacao, 
+    "Café, Leite, Espuma");
+
+// 2. Clonar para novo pedido
+Bebida pedido1 = 
+    menuTemplate.clone();
+
+// 3. Personalizar
+pedido1.setQuantidade(2);
+pedido1.setTamanho("Pequeno");
+pedido1.getLocalizacao()
+    .setMesa(5);
+
+// 4. Template inalterado!
+System.out.println(
+    menuTemplate.getQuantidade()); 
+// Saída: 1 (NUNCA mudou!)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: Testes Unitários -->
+        <section>
+            <div class="section-header">
+                <h2>✅ Testes Unitários</h2>
+                <p>Validação automática do padrão Prototype</p>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testClonarPedido</strong> - Clonar com independência total
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testQuantidadeIndependente</strong> - Quantidade de cada pedido é independente
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testTamanhoIndependente</strong> - Tamanho pode variar sem afetar template
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testPrecoIndependente</strong> - Preços podem ser diferentes por tamanho
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testDeepCopyLocalizacao</strong> - Localização é cópia profunda
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testGeloIndependente</strong> - Gelo é personalização independente
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testCalculoTotalPreco</strong> - Total = preço × quantidade
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testMultiplosPedidosIndependentes</strong> - 3+ pedidos simultaneamente
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testLocalizacaoNaoCompartilhada</strong> - Referências diferentes
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testNomeComVariacoes</strong> - Nome pode variar (com caramelo, etc)
+                    </div>
+                </div>
+
+                <div class="test-result passed">
+                    <div class="test-icon">✓</div>
+                    <div>
+                        <strong>testPreservacaoAtributosCompleta</strong> - Todos atributos preservados
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #D4EDDA; padding: 20px; border-radius: var(--border-radius); border-left: 4px solid var(--success-color); margin-top: 20px;">
+                <strong style="color: var(--success-color); font-size: 1.2em;">📊 Resumo dos Testes</strong>
+                <div style="margin-top: 15px; color: #155724;">
+                    <p><strong>Total de Testes: 11</strong></p>
+                    <p><strong>Passou: 11 ✓</strong></p>
+                    <p><strong>Falhou: 0</strong></p>
+                    <p><strong>Erros: 0</strong></p>
+                    <p style="margin-top: 10px; font-weight: 600;">🎯 Taxa de Sucesso: 100%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 10: Casos de Uso Práticos -->
+        <section>
+            <div class="section-header">
+                <h2>🎯 Casos de Uso Práticos</h2>
+                <p>Onde o padrão Prototype é útil no mundo real</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">☕</span>
+                        Sistema de Pedidos
+                    </div>
+                    <div class="card-content">
+                        <p>Clonar itens do cardápio para criar variações de pedidos (tamanho, adições, personalizações).</p>
+                        <div class="card-highlight">
+                            Exemplo: Café Cappuccino base → Clonar → Cappuccino Pequeno com Caramelo
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🛒</span>
+                        E-commerce
+                    </div>
+                    <div class="card-content">
+                        <p>Produtos com variações (cores, tamanhos) clonando um produto base.</p>
+                        <div class="card-highlight">
+                            Exemplo: Camiseta vermelha → Clonar → Camiseta azul, verde, etc.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🎮</span>
+                        Desenvolvimento de Jogos
+                    </div>
+                    <div class="card-content">
+                        <p>Criar múltiplas instâncias de NPCs, inimigos ou objetos a partir de um template.</p>
+                        <div class="card-highlight">
+                            Exemplo: Soldado inimigo → Clonar → Vários inimigos com posições diferentes
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">📋</span>
+                        Documentos/Templates
+                    </div>
+                    <div class="card-content">
+                        <p>Clonar templates de documentos (contratos, relatórios, formulários).</p>
+                        <div class="card-highlight">
+                            Exemplo: Contrato padrão → Clonar → Contratos personalizados para clientes
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 11: Resumo Executivo -->
+        <section>
+            <div class="section-header">
+                <h2>📈 Resumo Executivo</h2>
+                <p>Os pontos-chave sobre o padrão Prototype neste projeto</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔐</span>
+                        Deep Copy
+                    </div>
+                    <div class="card-content">
+                        <p>Objetos clonados são completamente independentes do template, garantindo isolamento total de dados.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">📝</span>
+                        Template Imutável
+                    </div>
+                    <div class="card-content">
+                        <p>O protótipo original nunca muda, servindo como fonte única de verdade para o cardápio.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">⚙️</span>
+                        Flexível
+                    </div>
+                    <div class="card-content">
+                        <p>Cada clone pode ser personalizado independentemente, oferecendo flexibilidade máxima.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; padding: 30px; border-radius: var(--border-radius); margin-top: 30px; text-align: center;">
+                <h3 style="font-size: 1.5em; margin-bottom: 15px;">🎉 Conclusão</h3>
+                <p style="font-size: 1.05em; line-height: 1.8;">
+                    O padrão <strong>Prototype</strong> transforma um sistema simples de pedidos em algo <strong>escalável, seguro e eficiente</strong>. 
+                    Em vez de criar cada pedido do zero, clonamos o template e personalizamos. Simples, poderoso e production-ready.
+                </p>
+                <p style="margin-top: 15px; font-size: 0.95em; opacity: 0.9;">
+                    ✨ Este é um exemplo prático de como padrões de design resolvem problemas reais em sistemas comerciais.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>☕ Sistema de Pedidos - Padrão Prototype</strong></p>
+            <p>Demonstração Prática de Design Pattern em Java</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                Desenvolvido com ❤️ para fins educacionais e comerciais
+            </p>
+            <p style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 15px; font-size: 0.85em;">
+                <span class="highlight">Padrão Criacional:</span> Prototype (Clone) | 
+                <span class="highlight">Linguagem:</span> Java 11+ | 
+                <span class="highlight">Framework:</span> Maven
+            </p>
+        </div>
+    </div>
+</body>
+</html>
