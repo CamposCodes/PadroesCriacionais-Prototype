@@ -39,7 +39,7 @@ Implementação do padrão **Prototype** aplicada a um sistema realista de pedid
 ## 📐 Diagrama de Classe <a name="diagrama"></a>
 O diagrama abaixo representa a arquitetura do projeto, enfatizando o padrão **Prototype** como mecanismo de criação de objetos:
 <p align="center">
-	<img src="./prototype-diagram.png" alt="Diagrama de Classe - Prototype" width="800"/>
+  <img src="./Prototype.png" alt="Diagrama de Classe - Prototype" width="800"/>
 </p>
 
 ## 🚀 Funcionalidades <a name="funcionalidades"></a>
