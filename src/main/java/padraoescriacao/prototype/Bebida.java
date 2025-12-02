@@ -11,7 +11,26 @@ public class Bebida implements Cloneable {
     private boolean comGelo;
 
     public Bebida(int codigoProduto, String nome, double preco, String tamanho, 
-                  Localizacao localizacao, String ingredientesPrincipais) {
+                  Localizacao localizacao, String ingredientesPrincipais) throws IllegalArgumentException {
+        if (codigoProduto <= 0) {
+            throw new IllegalArgumentException("Código do produto deve ser maior que zero");
+        }
+        if (nome == null || nome.isEmpty()) {
+            throw new IllegalArgumentException("Nome da bebida não pode ser vazio");
+        }
+        if (preco < 0) {
+            throw new IllegalArgumentException("Preço não pode ser negativo");
+        }
+        if (tamanho == null || tamanho.isEmpty()) {
+            throw new IllegalArgumentException("Tamanho não pode ser vazio");
+        }
+        if (localizacao == null) {
+            throw new IllegalArgumentException("Localização não pode ser nula");
+        }
+        if (ingredientesPrincipais == null || ingredientesPrincipais.isEmpty()) {
+            throw new IllegalArgumentException("Ingredientes principais não podem estar vazios");
+        }
+        
         this.codigoProduto = codigoProduto;
         this.nome = nome;
         this.preco = preco;
@@ -58,7 +77,10 @@ public class Bebida implements Cloneable {
         return quantidade;
     }
 
-    public void setQuantidade(int quantidade) {
+    public void setQuantidade(int quantidade) throws IllegalArgumentException {
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+        }
         this.quantidade = quantidade;
     }
 
@@ -74,7 +96,10 @@ public class Bebida implements Cloneable {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(double preco) throws IllegalArgumentException {
+        if (preco < 0) {
+            throw new IllegalArgumentException("Preço não pode ser negativo");
+        }
         this.preco = preco;
     }
 
